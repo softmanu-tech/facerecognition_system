@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
+
+    <style>
+        /* Additional CSS styles for the view reports page */
+        .report-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .report-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .share-button,
+        .print-button,
+        .download-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <title>View Reports</title>
+</head>
+<body>
+    <h1>View Reports</h1>
+    <h2>Attendance Report</h2>
+    <ul class="report-list">
+        {% for attendance in attendances %}
+            <li class="report-item">
+                <span>{{ attendance.member.name }} - {{ attendance.marked_time }}</span>
+                <div class="actions">
+                    <button class="share-button" data-report="{{ attendance.member.name }} - {{ attendance.marked_time }}">Share</button>
+                    <button class="download-button" data-report="{{ attendance.member.name }} - {{ attendance.marked_time }}">Download PDF</button>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- JavaScript for sharing and downloading reports as PDF -->
+    <script>
+        const shareButtons = document.querySelectorAll('.share-button');
+        const downloadButtons = document.querySelectorAll('.download-button');
+
+        shareButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const reportText = button.getAttribute('data-report');
+                // Implement your share functionality here
+                alert(`Sharing report: ${reportText}`);
+            });
+        });
+
+        downloadButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const reportText = button.getAttribute('data-report');
+                // Implement your PDF download functionality here
+                downloadReportAsPdf(reportText);
+            });
+        });
+
+        // Function to download the report as PDF
+        function downloadReportAsPdf(reportText) {
+            const pdf = new jsPDF();
+            pdf.text(reportText, 10, 10);
+            pdf.save('attendance_report.pdf');
+        }
+    </script>
+</body>
+</html>
